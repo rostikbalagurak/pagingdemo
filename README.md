@@ -1,6 +1,6 @@
 # pagingdemo
 
-A simple android application that features the new Android Paging Library for creating the paginated list. It allows the user to enter a range of integers and paginates data in that range.
+A simple android application that features Android Paging Library for creating the paginated list. It allows the user to enter a range of integers and paginates data in that range.
 
 Build with help of:
 
