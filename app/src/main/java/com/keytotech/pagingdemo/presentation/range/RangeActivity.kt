@@ -19,6 +19,10 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
+import android.content.DialogInterface
+import android.app.ProgressDialog
+
+
 
 /**
  * RangeActivity
@@ -57,7 +61,29 @@ class RangeActivity : AppCompatActivity() {
             Status.SUCCESS -> {
                 openCommentsScreen(resource.get())
             }
+            Status.RUNNING -> {
+                showLoadingDialog()
+            }
         }
+    }
+
+    private var loadingDialog: ProgressDialog? = null
+
+    private fun showLoadingDialog() {
+        loadingDialog = ProgressDialog(this)
+        loadingDialog?.setTitle(getString(R.string.loading_title))
+        loadingDialog?.setMessage(getString(R.string.loading_message))
+        loadingDialog?.setButton(getString(R.string.loading_cancel), DialogInterface.OnClickListener { _, _ ->
+            hideLoading()
+            viewModel.cancelLoading()
+            return@OnClickListener
+        })
+        loadingDialog?.show()
+    }
+
+    private fun hideLoading() {
+        loadingDialog?.dismiss()
+        loadingDialog = null
     }
 
     private fun initUI() {
@@ -81,6 +107,7 @@ class RangeActivity : AppCompatActivity() {
     }
 
     private fun openCommentsScreen(idsRange: IdsRange) {
+        hideLoading()
         CommentsActivity.start(this, idsRange)
     }
 
