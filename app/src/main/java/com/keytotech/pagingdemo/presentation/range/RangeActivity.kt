@@ -17,7 +17,7 @@ import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
-import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.activity_range.*
 import javax.inject.Inject
 import android.content.DialogInterface
 import android.app.ProgressDialog
@@ -38,7 +38,7 @@ class RangeActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_range)
         this.bindViewModel()
         this.initUI()
     }

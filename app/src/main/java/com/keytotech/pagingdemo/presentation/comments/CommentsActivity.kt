@@ -10,6 +10,7 @@ import android.os.Bundle
 import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
+import android.view.MenuItem
 import com.keytotech.pagingdemo.R
 import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.entity.Comment
@@ -48,6 +49,8 @@ class CommentsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
         rvComments.layoutManager = LinearLayoutManager(this)
         rvComments.adapter = adapter
         swipeRefresh.setOnRefreshListener(this)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
     }
 
     private fun bindViewModel() {
@@ -66,6 +69,16 @@ class CommentsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
         })
         (intent?.getSerializableExtra(RANGE) as IdsRange?)?.let {
             this.commentsViewModel.fetch(it)
+        }
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
         }
     }
 

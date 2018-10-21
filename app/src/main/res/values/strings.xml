@@ -7,4 +7,5 @@
     <string name="loading_title">Loading</string>
     <string name="loading_message">Please wait while data is loading</string>
     <string name="loading_cancel">Cancel</string>
+    <string name="range_hint">Hint: Enter a range between 0 and 500. Minimum range is 10. Range values will be rounded to lower 10</string>
 </resources>

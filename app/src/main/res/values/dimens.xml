@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    // general
+    <dimen name="general_margin_default">16dp</dimen>
+
+    // range
+    <dimen name="range_hint_margin">20dp</dimen>
+    <dimen name="range_hint_text_size">14sp</dimen>
+
+    // comments
+    <dimen name="comment_item_margin">12dp</dimen>
+    <dimen name="comment_item_height">19dp</dimen>
+    <dimen name="comment_item_padding">8dp</dimen>
+</resources>
