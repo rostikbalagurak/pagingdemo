@@ -15,6 +15,9 @@ import java.util.concurrent.Executor
  *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
+
+private const val DEBUG_SLEEP_RESPONSE_DURATION = 2000L
+
 class CommentsDataSource(
     private val repository: CommentsRepository,
     private val pagination: Pagination,
@@ -51,7 +54,7 @@ class CommentsDataSource(
                 networkState.value = Status.RUNNING
             }
             val response = repository.getComments(currentPage, pagination.limit).await()
-            Thread.sleep(5000)
+            Thread.sleep(DEBUG_SLEEP_RESPONSE_DURATION)
             callback.onResult(response, null, nextPage)
             GlobalScope.launch(Dispatchers.Main) {
                 networkState.value = Status.SUCCESS
@@ -70,7 +73,7 @@ class CommentsDataSource(
                     networkState.value = Status.RUNNING
                 }
                 val response = repository.getComments(currentPage, pagination.limit).await()
-                Thread.sleep(5000)
+                Thread.sleep(DEBUG_SLEEP_RESPONSE_DURATION)
                 callback.onResult(response, nextPage)
                 GlobalScope.launch(Dispatchers.Main) {
                     networkState.value = Status.SUCCESS
