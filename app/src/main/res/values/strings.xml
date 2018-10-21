@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">PagingDemo</string>
+    <string name="start">Start</string>
+    <string name="limit">Limit</string>
+    <string name="next_button">Next</string>
+    <string name="invalid_range">Invalid range</string>
+</resources>
