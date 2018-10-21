@@ -5,7 +5,7 @@ import android.arch.paging.LivePagedListBuilder
 import android.arch.paging.PagedList
 import android.support.annotation.MainThread
 import com.keytotech.pagingdemo.domain.boundaries.repository.CommentsRepository
-import com.keytotech.pagingdemo.domain.entity.CommentEntity
+import com.keytotech.pagingdemo.domain.entity.Comment
 import java.util.concurrent.Executor
 import javax.inject.Inject
 
@@ -23,7 +23,7 @@ class CommentsListingProvider @Inject constructor(
         CommentsDataFactory(commentsAPI, networkExecutor)
 
     @MainThread
-    fun comments(pageSize: Int): CommentListing<CommentEntity> {
+    fun comments(pageSize: Int): CommentListing<Comment> {
         val config = pagedListConfig(pageSize)
         val livePagedList = LivePagedListBuilder(dataFactory, config)
             .setFetchExecutor(networkExecutor)
@@ -33,7 +33,7 @@ class CommentsListingProvider @Inject constructor(
         }
         return CommentListing(
             pagedList = livePagedList,
-            networkState = Transformations.switchMap(dataFactory.source) {
+            networkResource = Transformations.switchMap(dataFactory.source) {
                 it.networkState
             },
             retry = {
@@ -42,7 +42,7 @@ class CommentsListingProvider @Inject constructor(
             refresh = {
                 dataFactory.source.value?.invalidate()
             },
-            refreshState = refreshState
+            refreshResource = refreshState
         )
     }
 

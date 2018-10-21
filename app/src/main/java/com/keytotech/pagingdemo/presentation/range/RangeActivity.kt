@@ -1,29 +1,58 @@
 package com.keytotech.pagingdemo.presentation.range
 
+import android.arch.lifecycle.Observer
+import android.arch.lifecycle.ViewModelProvider
+import android.arch.lifecycle.ViewModelProviders
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.widget.EditText
 import android.widget.Toast
 import com.jakewharton.rxbinding2.widget.RxTextView
 import com.keytotech.pagingdemo.R
+import com.keytotech.pagingdemo.di.viewModel.NetworkResource
+import com.keytotech.pagingdemo.di.viewModel.Status
+import com.keytotech.pagingdemo.domain.entity.IdsRange
 import com.keytotech.pagingdemo.presentation.comments.CommentsActivity
+import dagger.android.AndroidInjection
 import io.reactivex.Observable
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.functions.BiFunction
 import kotlinx.android.synthetic.main.activity_main.*
+import javax.inject.Inject
 
-class RangeActivity : AppCompatActivity(), RangeView {
+class RangeActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
 
-    lateinit var presenter: RangePresenter
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+    lateinit var viewModel: RangeViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AndroidInjection.inject(this)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        this.presenter = RangePresenter(this)
-        //  this.bindMockData()
+        this.bindViewModel()
         this.initUI()
+    }
+
+    private fun bindViewModel() {
+        this.viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(RangeViewModel::class.java)
+        this.viewModel.range().observe(this, Observer { resource ->
+            resource?.let { bindRange(it) }
+        })
+    }
+
+    private fun bindRange(resource: NetworkResource<IdsRange>) {
+        when (resource.status) {
+            Status.FAILED -> {
+                showInvalidRangeError()
+            }
+            Status.SUCCESS -> {
+                openCommentsScreen(resource.get())
+            }
+        }
     }
 
     private fun initUI() {
@@ -42,21 +71,16 @@ class RangeActivity : AppCompatActivity(), RangeView {
             }
         )
         button.setOnClickListener {
-            this.presenter.validate(this.start(), this.end())
+            this.viewModel.validate(IdsRange(this.start(), this.end()))
         }
     }
 
-    override fun openCommentsScreen(start: Int, end: Int) {
-        CommentsActivity.start(this, start, end)
+    private fun openCommentsScreen(idsRange: IdsRange) {
+        CommentsActivity.start(this, idsRange)
     }
 
-    override fun showInvalidRangeError() {
+    private fun showInvalidRangeError() {
         Toast.makeText(baseContext, getString(R.string.invalid_range), Toast.LENGTH_SHORT).show()
-    }
-
-    private fun bindMockData() {
-        this.etLimit.setText("2")
-        this.etStart.setText("15")
     }
 
     private fun start(): Int {

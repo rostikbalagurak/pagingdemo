@@ -8,8 +8,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.keytotech.pagingdemo.R
-import com.keytotech.pagingdemo.di.viewModel.NetworkState
-import com.keytotech.pagingdemo.domain.entity.CommentEntity
+import com.keytotech.pagingdemo.di.viewModel.NetworkResource
+import com.keytotech.pagingdemo.di.viewModel.Status
+import com.keytotech.pagingdemo.domain.entity.Comment
 
 /**
  * CommentsAdapter
@@ -17,9 +18,9 @@ import com.keytotech.pagingdemo.domain.entity.CommentEntity
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
 class CommentsAdapter(private val retryCallback: () -> Unit) :
-    PagedListAdapter<CommentEntity, CommentsViewHolder>(COMMENTS_COMPARATOR) {
+    PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
 
-    private var networkState: NetworkState? = null
+    private var networkResource: NetworkResource<*>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): CommentsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -53,10 +54,10 @@ class CommentsAdapter(private val retryCallback: () -> Unit) :
         }
     }
 
-    fun setNetworkState(newNetworkState: NetworkState?) {
-        val previousState = this.networkState
+    fun setNetworkState(newNetworkResource: NetworkResource<*>?) {
+        val previousState = this.networkResource
         val hadExtraRow = hasExtraRow()
-        this.networkState = newNetworkState
+        this.networkResource = newNetworkResource
         val hasExtraRow = hasExtraRow()
         if (hadExtraRow != hasExtraRow) {
             if (hadExtraRow) {
@@ -64,28 +65,23 @@ class CommentsAdapter(private val retryCallback: () -> Unit) :
             } else {
                 notifyItemInserted(super.getItemCount())
             }
-        } else if (hasExtraRow && previousState != newNetworkState) {
+        } else if (hasExtraRow && previousState != newNetworkResource) {
             notifyItemChanged(itemCount - 1)
         }
     }
 
-
-//    override fun getItemCount(): Int {
-//        return super.getItemCount() + if (hasExtraRow()) 1 else 0
-//    }
-
-    private fun hasExtraRow() = networkState != null && networkState != NetworkState.LOADED
+    private fun hasExtraRow() = networkResource?.status != Status.SUCCESS
 
     companion object {
 
-        val COMMENTS_COMPARATOR = object : DiffUtil.ItemCallback<CommentEntity>() {
-            override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean =
+        val COMMENTS_COMPARATOR = object : DiffUtil.ItemCallback<Comment>() {
+            override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean =
                 oldItem == newItem
 
-            override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean =
+            override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
                 oldItem.name == newItem.name
 
-            override fun getChangePayload(oldItem: CommentEntity, newItem: CommentEntity): Any? {
+            override fun getChangePayload(oldItem: Comment, newItem: Comment): Any? {
                 return null
             }
         }
@@ -97,7 +93,7 @@ class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
     private val tvBody = itemView.findViewById<TextView>(R.id.tvBody)
 
-    fun bind(comment: CommentEntity) {
+    fun bind(comment: Comment) {
         tvEmail.text = comment.email
         tvTitle.text = comment.name
         tvBody.text = comment.body

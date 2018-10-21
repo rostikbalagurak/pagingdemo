@@ -10,20 +10,18 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.keytotech.pagingdemo.R
-import com.keytotech.pagingdemo.domain.entity.CommentEntity
+import com.keytotech.pagingdemo.domain.entity.Comment
+import com.keytotech.pagingdemo.domain.entity.IdsRange
 import com.keytotech.pagingdemo.presentation.comments.list.CommentsAdapter
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_paging.*
 import javax.inject.Inject
 
-private const val START = "start"
-private const val LIMIT = "limit"
-
 class CommentsActivity : AppCompatActivity() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    lateinit var commentsViewModel: CommentsViewModel
+    private lateinit var commentsViewModel: CommentsViewModel
 
     private var adapter = CommentsAdapter {
         commentsViewModel.retry()
@@ -46,21 +44,22 @@ class CommentsActivity : AppCompatActivity() {
         this.commentsViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(CommentsViewModel::class.java)
 
-        this.commentsViewModel.commentsList.observe(this, Observer<PagedList<CommentEntity>> {
+        this.commentsViewModel.commentsList.observe(this, Observer<PagedList<Comment>> {
             adapter.submitList(it)
         })
 
-        this.commentsViewModel.networkState.observe(this, Observer {
+        this.commentsViewModel.networkResource.observe(this, Observer {
             adapter.setNetworkState(it)
         })
         this.commentsViewModel.fetch()
     }
 
     companion object {
-        fun start(context: Context, start: Int, limit: Int) {
+        private const val RANGE = "range"
+
+        fun start(context: Context, idsRange: IdsRange) {
             val intent = Intent(context, CommentsActivity::class.java)
-            intent.putExtra(START, start)
-            intent.putExtra(LIMIT, limit)
+            intent.putExtra(RANGE, idsRange)
             context.startActivity(intent)
         }
     }

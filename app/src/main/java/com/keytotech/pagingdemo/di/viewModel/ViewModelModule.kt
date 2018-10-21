@@ -3,6 +3,7 @@ package com.keytotech.pagingdemo.di.viewModel
 import android.arch.lifecycle.ViewModel
 import android.arch.lifecycle.ViewModelProvider
 import com.keytotech.pagingdemo.presentation.comments.CommentsViewModel
+import com.keytotech.pagingdemo.presentation.range.RangeViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,4 +23,9 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(CommentsViewModel::class)
     internal abstract fun bindCommentsViewModel(viewModel: CommentsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RangeViewModel::class)
+    internal abstract fun bindRangeViewModel(viewModel: RangeViewModel): ViewModel
 }

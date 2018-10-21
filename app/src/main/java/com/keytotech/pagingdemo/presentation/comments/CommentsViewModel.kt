@@ -6,8 +6,8 @@ import android.arch.lifecycle.Transformations.map
 import android.arch.lifecycle.Transformations.switchMap
 import android.arch.lifecycle.ViewModel
 import android.arch.paging.PagedList
-import com.keytotech.pagingdemo.di.viewModel.NetworkState
-import com.keytotech.pagingdemo.domain.entity.CommentEntity
+import com.keytotech.pagingdemo.di.viewModel.NetworkResource
+import com.keytotech.pagingdemo.domain.entity.Comment
 import com.keytotech.pagingdemo.presentation.comments.pagination.CommentListing
 import com.keytotech.pagingdemo.presentation.comments.pagination.CommentsListingProvider
 import javax.inject.Inject
@@ -21,13 +21,13 @@ class CommentsViewModel @Inject constructor(private val listingProvider: Comment
 
     private val pageSize = 30
     var commentsData = MutableLiveData<Int>()
-    private val repoResult: LiveData<CommentListing<CommentEntity>> = map(commentsData) {
+    private val repoResult: LiveData<CommentListing<Comment>> = map(commentsData) {
         listingProvider.comments(pageSize)
     }
 
-    val commentsList: LiveData<PagedList<CommentEntity>> = switchMap(repoResult) { it.pagedList }
-    val networkState: LiveData<NetworkState> = switchMap(repoResult) { it.networkState }
-    val refreshState: LiveData<NetworkState> = switchMap(repoResult) { it.refreshState }
+    val commentsList: LiveData<PagedList<Comment>> = switchMap(repoResult) { it.pagedList }
+    val networkResource: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.networkResource }
+    val refreshResource: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.refreshResource }
 
     fun fetch() {
         this.commentsData.value = pageSize

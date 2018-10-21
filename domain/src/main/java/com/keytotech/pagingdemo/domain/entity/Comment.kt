@@ -1,6 +1,6 @@
 package com.keytotech.pagingdemo.domain.entity
 
-data class CommentEntity(
+data class Comment(
     val name: String = "",
     val postId: Int = 0,
     val id: Int = 0,
