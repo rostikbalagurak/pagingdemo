@@ -1,6 +1,6 @@
 package com.keytotech.pagingdemo.di
 
-import com.keytotech.pagingdemo.presentation.range.MainActivity
+import com.keytotech.pagingdemo.presentation.range.RangeActivity
 import com.keytotech.pagingdemo.presentation.comments.CommentsActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -18,7 +18,7 @@ abstract class ActivityBuilder {
 
         ]
     )
-    internal abstract fun bindMainActivity(): MainActivity
+    internal abstract fun bindMainActivity(): RangeActivity
 
     @ContributesAndroidInjector
     internal abstract fun bindComentsActivity(): CommentsActivity

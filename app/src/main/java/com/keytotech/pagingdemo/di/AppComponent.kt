@@ -2,6 +2,7 @@ package com.keytotech.pagingdemo.di
 
 import android.app.Application
 import com.keytotech.pagingdemo.DemoApp
+import com.keytotech.pagingdemo.data.di.DataModule
 import com.keytotech.pagingdemo.di.viewModel.ViewModelModule
 import dagger.BindsInstance
 import dagger.Component
@@ -18,11 +19,10 @@ import javax.inject.Singleton
 @Component(
     modules = [
         AndroidInjectionModule::class,
-        AppModule::class,
-        NetworkModule::class,
+        ContextModule::class,
+        DataModule::class,
         ActivityBuilder::class,
-        ViewModelModule::class,
-        ExecutorsModule::class
+        ViewModelModule::class
     ]
 )
 interface AppComponent {

@@ -8,8 +8,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import com.keytotech.pagingdemo.R
-import com.keytotech.pagingdemo.data.NetworkState
-import com.keytotech.pagingdemo.data.models.Comment
+import com.keytotech.pagingdemo.di.viewModel.NetworkState
+import com.keytotech.pagingdemo.domain.entity.CommentEntity
 
 /**
  * CommentsAdapter
@@ -17,7 +17,7 @@ import com.keytotech.pagingdemo.data.models.Comment
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
 class CommentsAdapter(private val retryCallback: () -> Unit) :
-    PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
+    PagedListAdapter<CommentEntity, CommentsViewHolder>(COMMENTS_COMPARATOR) {
 
     private var networkState: NetworkState? = null
 
@@ -78,14 +78,14 @@ class CommentsAdapter(private val retryCallback: () -> Unit) :
 
     companion object {
 
-        val COMMENTS_COMPARATOR = object : DiffUtil.ItemCallback<Comment>() {
-            override fun areContentsTheSame(oldItem: Comment, newItem: Comment): Boolean =
+        val COMMENTS_COMPARATOR = object : DiffUtil.ItemCallback<CommentEntity>() {
+            override fun areContentsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean =
                 oldItem == newItem
 
-            override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
+            override fun areItemsTheSame(oldItem: CommentEntity, newItem: CommentEntity): Boolean =
                 oldItem.name == newItem.name
 
-            override fun getChangePayload(oldItem: Comment, newItem: Comment): Any? {
+            override fun getChangePayload(oldItem: CommentEntity, newItem: CommentEntity): Any? {
                 return null
             }
         }
@@ -97,7 +97,7 @@ class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
     private val tvBody = itemView.findViewById<TextView>(R.id.tvBody)
 
-    fun bind(comment: Comment) {
+    fun bind(comment: CommentEntity) {
         tvEmail.text = comment.email
         tvTitle.text = comment.name
         tvBody.text = comment.body

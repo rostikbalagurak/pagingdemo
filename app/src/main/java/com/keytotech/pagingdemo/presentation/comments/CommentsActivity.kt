@@ -10,8 +10,7 @@ import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.keytotech.pagingdemo.R
-import com.keytotech.pagingdemo.data.NetworkState
-import com.keytotech.pagingdemo.data.models.Comment
+import com.keytotech.pagingdemo.domain.entity.CommentEntity
 import com.keytotech.pagingdemo.presentation.comments.list.CommentsAdapter
 import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_paging.*
@@ -47,7 +46,7 @@ class CommentsActivity : AppCompatActivity() {
         this.commentsViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(CommentsViewModel::class.java)
 
-        this.commentsViewModel.commentsList.observe(this, Observer<PagedList<Comment>> {
+        this.commentsViewModel.commentsList.observe(this, Observer<PagedList<CommentEntity>> {
             adapter.submitList(it)
         })
 
