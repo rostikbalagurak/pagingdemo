@@ -2,7 +2,6 @@ package com.keytotech.pagingdemo.presentation.comments.pagination
 
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PageKeyedDataSource
-import com.keytotech.pagingdemo.di.viewModel.NetworkResource
 import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.boundaries.repository.CommentsRepository
 import com.keytotech.pagingdemo.domain.entity.Comment
@@ -16,7 +15,10 @@ import java.util.concurrent.Executor
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
 
-private const val DEBUG_SLEEP_RESPONSE_DURATION = 2000L
+/**
+ * manual delay just for testing purposes since API calls are to fast
+ */
+private const val DEBUG_SLEEP_RESPONSE_DURATION = 400L
 
 class CommentsDataSource(
     private val repository: CommentsRepository,

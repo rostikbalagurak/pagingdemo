@@ -14,7 +14,6 @@ import kotlinx.coroutines.Deferred
 class NetworkCommentsRepository(private val commentsAPI: CommentsAPI) : CommentsRepository {
 
     override fun getComments(page: Int, limit: Int, sort: String): Deferred<List<Comment>> {
-        Log.d("AAAA", "Loading page: $page, limit: $limit")
         return commentsAPI.getComments(page, limit, sort)
     }
 }
