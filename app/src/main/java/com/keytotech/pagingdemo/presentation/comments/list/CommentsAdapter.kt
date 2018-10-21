@@ -17,8 +17,7 @@ import com.keytotech.pagingdemo.domain.entity.Comment
  *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
-class CommentsAdapter(private val retryCallback: () -> Unit) :
-    PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
+class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
 
     private var networkResource: NetworkResource<*>? = null
 
@@ -31,18 +30,7 @@ class CommentsAdapter(private val retryCallback: () -> Unit) :
         return CommentsViewHolder(view)
     }
 
-    override fun onBindViewHolder(
-        holder: CommentsViewHolder,
-        position: Int,
-        payloads: MutableList<Any>
-    ) {
-//        if (payloads.isNotEmpty()) {
-//            getItem(position)?.let {
-//                holder.bind(it)
-//            }
-//        } else {
-//            //TODO
-//        }
+    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int, payloads: MutableList<Any>) {
         getItem(position)?.let {
             holder.bind(it)
         }
@@ -89,11 +77,13 @@ class CommentsAdapter(private val retryCallback: () -> Unit) :
 }
 
 class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val tvId = itemView.findViewById<TextView>(R.id.tvId)
     private val tvEmail = itemView.findViewById<TextView>(R.id.tvEmail)
     private val tvTitle = itemView.findViewById<TextView>(R.id.tvTitle)
     private val tvBody = itemView.findViewById<TextView>(R.id.tvBody)
 
     fun bind(comment: Comment) {
+        tvId.text = "${comment.id}"
         tvEmail.text = comment.email
         tvTitle.text = comment.name
         tvBody.text = comment.body

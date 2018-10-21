@@ -15,8 +15,8 @@ interface CommentsAPI {
 
     @GET("/comments")
     fun getComments(
-        @Query("page") page: Int,
-        @Query("limit") limit: Int,
+        @Query("_page") page: Int,
+        @Query("_limit") limit: Int,
         @Query("sort") sort: String
     ): Deferred<List<Comment>>
 }

@@ -23,9 +23,7 @@ class CommentsActivity : AppCompatActivity() {
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var commentsViewModel: CommentsViewModel
 
-    private var adapter = CommentsAdapter {
-        commentsViewModel.retry()
-    }
+    private var adapter = CommentsAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         AndroidInjection.inject(this)
@@ -43,15 +41,15 @@ class CommentsActivity : AppCompatActivity() {
     private fun bindViewModel() {
         this.commentsViewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(CommentsViewModel::class.java)
-
         this.commentsViewModel.commentsList.observe(this, Observer<PagedList<Comment>> {
             adapter.submitList(it)
         })
-
         this.commentsViewModel.networkResource.observe(this, Observer {
             adapter.setNetworkState(it)
         })
-        this.commentsViewModel.fetch()
+        (intent?.getSerializableExtra(RANGE) as IdsRange?)?.let {
+            this.commentsViewModel.fetch(it)
+        }
     }
 
     companion object {

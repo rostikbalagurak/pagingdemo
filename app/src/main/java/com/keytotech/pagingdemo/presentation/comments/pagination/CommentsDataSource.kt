@@ -5,6 +5,7 @@ import android.arch.paging.PageKeyedDataSource
 import com.keytotech.pagingdemo.di.viewModel.NetworkResource
 import com.keytotech.pagingdemo.domain.boundaries.repository.CommentsRepository
 import com.keytotech.pagingdemo.domain.entity.Comment
+import com.keytotech.pagingdemo.presentation.comments.Pagination
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import java.util.concurrent.Executor
@@ -16,7 +17,7 @@ import java.util.concurrent.Executor
  */
 class CommentsDataSource(
     private val repository: CommentsRepository,
-    private val pageSize: Int = 10,
+    private val pagination: Pagination,
     private val retryExecutor: Executor
 ) : PageKeyedDataSource<Int, Comment>() {
 
@@ -43,10 +44,10 @@ class CommentsDataSource(
 
     @ExperimentalCoroutinesApi
     override fun loadInitial(params: LoadInitialParams<Int>, callback: LoadInitialCallback<Int, Comment>) {
-        val currentPage = 1
+        val currentPage = pagination.startPage
         val nextPage = currentPage + 1
         runBlocking {
-            val response = repository.getComments(currentPage, pageSize).await()
+            val response = repository.getComments(currentPage, pagination.limit).await()
             callback.onResult(response, null, nextPage)
         }
     }
@@ -54,10 +55,13 @@ class CommentsDataSource(
     @ExperimentalCoroutinesApi
     override fun loadAfter(params: LoadParams<Int>, callback: LoadCallback<Int, Comment>) {
         val currentPage = params.key
-        val nextPage = currentPage + 1
-        runBlocking {
-            val response = repository.getComments(currentPage, pageSize).await()
-            callback.onResult(response, nextPage)
+
+        if (currentPage <= pagination.endPage) {
+            val nextPage = currentPage + 1
+            runBlocking {
+                val response = repository.getComments(currentPage, pagination.limit).await()
+                callback.onResult(response, nextPage)
+            }
         }
     }
 
