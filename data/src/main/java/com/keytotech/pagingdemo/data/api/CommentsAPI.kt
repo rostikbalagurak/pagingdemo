@@ -10,7 +10,6 @@ import retrofit2.http.Query
  *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
-
 interface CommentsAPI {
 
     @GET("/comments")

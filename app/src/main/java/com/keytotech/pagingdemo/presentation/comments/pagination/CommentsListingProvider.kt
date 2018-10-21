@@ -20,6 +20,9 @@ class CommentsListingProvider @Inject constructor(
     private val networkExecutor: Executor
 ) {
 
+    /**
+     *  Builds comments loader base on provided @param Pagination
+     */
     @MainThread
     fun comments(pagination: Pagination): CommentListing<Comment> {
         val dataFactory = CommentsDataFactory(commentsAPI, networkExecutor, pagination)

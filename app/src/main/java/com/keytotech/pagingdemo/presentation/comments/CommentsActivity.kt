@@ -17,6 +17,11 @@ import dagger.android.AndroidInjection
 import kotlinx.android.synthetic.main.activity_paging.*
 import javax.inject.Inject
 
+/**
+ * CommentsActivity
+ *
+ * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
+ */
 class CommentsActivity : AppCompatActivity() {
 
     @Inject

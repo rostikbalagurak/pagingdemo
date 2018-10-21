@@ -5,8 +5,6 @@ import retrofit2.Retrofit
 /**
  * ApiModule
  *
- * Retrofit API provider
- *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
 interface ApiModuleProvider<T> {

@@ -7,6 +7,11 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
+/**
+ * RepositoryModule
+ *
+ * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
+ */
 @Module
 class RepositoryModule {
 

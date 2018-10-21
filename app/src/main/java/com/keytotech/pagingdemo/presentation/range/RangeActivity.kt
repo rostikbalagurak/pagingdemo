@@ -20,6 +20,11 @@ import io.reactivex.functions.BiFunction
 import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
+/**
+ * RangeActivity
+ *
+ * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
+ */
 class RangeActivity : AppCompatActivity() {
 
     private val compositeDisposable = CompositeDisposable()
