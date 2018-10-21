@@ -53,6 +53,6 @@ class RangeViewModel @Inject constructor(private val idsRangeValidator: IdsRange
     }
 
     companion object {
-        private const val DELAY_SECONDS = 3L
+        private const val DELAY_SECONDS = 2L
     }
 }

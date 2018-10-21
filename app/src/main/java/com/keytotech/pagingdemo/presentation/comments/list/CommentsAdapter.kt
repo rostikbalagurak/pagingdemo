@@ -19,7 +19,7 @@ import com.keytotech.pagingdemo.domain.entity.Comment
  */
 class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
 
-    private var networkResource: NetworkResource<*>? = null
+    private var loadingState: NetworkResource<*>? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, position: Int): CommentsViewHolder {
         val view = LayoutInflater.from(parent.context).inflate(
@@ -42,10 +42,10 @@ class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_C
         }
     }
 
-    fun setNetworkState(newNetworkResource: NetworkResource<*>?) {
-        val previousState = this.networkResource
+    fun setLoadingState(loadingResource: NetworkResource<*>?) {
+        val previousState = this.loadingState
         val hadExtraRow = hasExtraRow()
-        this.networkResource = newNetworkResource
+        this.loadingState = loadingResource
         val hasExtraRow = hasExtraRow()
         if (hadExtraRow != hasExtraRow) {
             if (hadExtraRow) {
@@ -53,12 +53,12 @@ class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_C
             } else {
                 notifyItemInserted(super.getItemCount())
             }
-        } else if (hasExtraRow && previousState != newNetworkResource) {
+        } else if (hasExtraRow && previousState != loadingResource) {
             notifyItemChanged(itemCount - 1)
         }
     }
 
-    private fun hasExtraRow() = networkResource?.status != Status.SUCCESS
+    private fun hasExtraRow() = loadingState?.status != Status.SUCCESS
 
     companion object {
 
@@ -67,7 +67,7 @@ class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_C
                 oldItem == newItem
 
             override fun areItemsTheSame(oldItem: Comment, newItem: Comment): Boolean =
-                oldItem.name == newItem.name
+                oldItem.id == newItem.id
 
             override fun getChangePayload(oldItem: Comment, newItem: Comment): Any? {
                 return null

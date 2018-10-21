@@ -27,8 +27,8 @@ class CommentsViewModel @Inject constructor(private val listingProvider: Comment
     }
 
     val commentsList: LiveData<PagedList<Comment>> = switchMap(repoResult) { it.pagedList }
-    val networkResource: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.networkResource }
-    val refreshResource: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.refreshResource }
+    val loadingState: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.loadingState }
+    val refreshState: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.refreshState }
 
     fun fetch(range: IdsRange) {
         val initialPage: Int = (range.start / pageSize) + 1

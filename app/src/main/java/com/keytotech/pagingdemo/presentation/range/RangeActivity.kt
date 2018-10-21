@@ -22,8 +22,6 @@ import javax.inject.Inject
 import android.content.DialogInterface
 import android.app.ProgressDialog
 
-
-
 /**
  * RangeActivity
  *

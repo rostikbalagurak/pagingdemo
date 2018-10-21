@@ -36,7 +36,7 @@ class CommentsListingProvider @Inject constructor(
         }
         return CommentListing(
             pagedList = livePagedList,
-            networkResource = Transformations.switchMap(dataFactory.source) {
+            loadingState = Transformations.switchMap(dataFactory.source) {
                 it.networkState
             },
             retry = {
@@ -45,7 +45,7 @@ class CommentsListingProvider @Inject constructor(
             refresh = {
                 dataFactory.source.value?.invalidate()
             },
-            refreshResource = refreshState
+            refreshState = refreshState
         )
     }
 

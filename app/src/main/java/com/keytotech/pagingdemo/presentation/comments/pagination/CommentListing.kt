@@ -15,10 +15,10 @@ data class CommentListing<T>(
     // the LiveData of paged lists for the UI to observe
     val pagedList: LiveData<PagedList<T>>,
     // represents the network request status to show to the user
-    val networkResource: LiveData<NetworkResource<*>>,
-    // represents the refresh status to show to the user. Separate from networkResource, this
+    val loadingState: LiveData<NetworkResource<*>>,
+    // represents the refresh status to show to the user. Separate from loadingState, this
     // value is importantly only when refresh is requested.
-    val refreshResource: LiveData<NetworkResource<*>>,
+    val refreshState: LiveData<NetworkResource<*>>,
     // refreshes the whole data and fetches it from scratch.
     val refresh: () -> Unit,
     // retries any failed requests.

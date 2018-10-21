@@ -7,9 +7,11 @@ import android.arch.paging.PagedList
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.v4.widget.SwipeRefreshLayout
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import com.keytotech.pagingdemo.R
+import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.entity.Comment
 import com.keytotech.pagingdemo.domain.entity.IdsRange
 import com.keytotech.pagingdemo.presentation.comments.list.CommentsAdapter
@@ -22,7 +24,7 @@ import javax.inject.Inject
  *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
-class CommentsActivity : AppCompatActivity() {
+class CommentsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -38,9 +40,14 @@ class CommentsActivity : AppCompatActivity() {
         this.bindViewModel()
     }
 
+    override fun onRefresh() {
+        this.commentsViewModel.refresh()
+    }
+
     private fun initUI() {
         rvComments.layoutManager = LinearLayoutManager(this)
         rvComments.adapter = adapter
+        swipeRefresh.setOnRefreshListener(this)
     }
 
     private fun bindViewModel() {
@@ -49,8 +56,13 @@ class CommentsActivity : AppCompatActivity() {
         this.commentsViewModel.commentsList.observe(this, Observer<PagedList<Comment>> {
             adapter.submitList(it)
         })
-        this.commentsViewModel.networkResource.observe(this, Observer {
-            adapter.setNetworkState(it)
+        this.commentsViewModel.loadingState.observe(this, Observer {
+            adapter.setLoadingState(it)
+        })
+        this.commentsViewModel.refreshState.observe(this, Observer {
+            if (it?.status != Status.RUNNING) {
+                swipeRefresh.isRefreshing = false
+            }
         })
         (intent?.getSerializableExtra(RANGE) as IdsRange?)?.let {
             this.commentsViewModel.fetch(it)
