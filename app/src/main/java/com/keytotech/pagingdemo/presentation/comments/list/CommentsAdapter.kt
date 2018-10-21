@@ -6,9 +6,9 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ProgressBar
 import android.widget.TextView
 import com.keytotech.pagingdemo.R
-import com.keytotech.pagingdemo.di.viewModel.NetworkResource
 import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.entity.Comment
 
@@ -17,32 +17,44 @@ import com.keytotech.pagingdemo.domain.entity.Comment
  *
  * @author Bogdan Ustyak (bogdan.ustyak@gmail.com)
  */
-class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_COMPARATOR) {
+class CommentsAdapter : PagedListAdapter<Comment, RecyclerView.ViewHolder>(COMMENTS_COMPARATOR) {
 
-    private var loadingState: NetworkResource<*>? = null
+    private var loadingState: Status? = null
 
-    override fun onCreateViewHolder(parent: ViewGroup, position: Int): CommentsViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(
-            R.layout.item_comment,
-            parent,
-            false
-        )
-        return CommentsViewHolder(view)
-    }
-
-    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int, payloads: MutableList<Any>) {
-        getItem(position)?.let {
-            holder.bind(it)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return when (viewType) {
+            R.layout.item_comment -> CommentsViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_comment,
+                    parent,
+                    false
+                )
+            )
+            R.layout.item_loading -> LoadingViewHolder(
+                LayoutInflater.from(parent.context).inflate(
+                    R.layout.item_loading,
+                    parent,
+                    false
+                )
+            )
+            else -> throw IllegalArgumentException("unknown view type $viewType")
         }
     }
 
-    override fun onBindViewHolder(holder: CommentsViewHolder, position: Int) {
-        getItem(position)?.let {
-            holder.bind(it)
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        when (getItemViewType(position)) {
+            R.layout.item_comment -> {
+                getItem(position)?.let {
+                    (holder as CommentsViewHolder).bind(it)
+                }
+            }
+            R.layout.item_loading -> {
+                (holder as LoadingViewHolder).bind(loadingState)
+            }
         }
     }
 
-    fun setLoadingState(loadingResource: NetworkResource<*>?) {
+    fun setLoadingState(loadingResource: Status?) {
         val previousState = this.loadingState
         val hadExtraRow = hasExtraRow()
         this.loadingState = loadingResource
@@ -58,7 +70,19 @@ class CommentsAdapter : PagedListAdapter<Comment, CommentsViewHolder>(COMMENTS_C
         }
     }
 
-    private fun hasExtraRow() = loadingState?.status != Status.SUCCESS
+    private fun hasExtraRow() = loadingState != Status.SUCCESS
+
+    override fun getItemViewType(position: Int): Int {
+        return if (hasExtraRow() && position == itemCount - 1) {
+            R.layout.item_loading
+        } else {
+            R.layout.item_comment
+        }
+    }
+
+    override fun getItemCount(): Int {
+        return super.getItemCount() + if (hasExtraRow()) 1 else 0
+    }
 
     companion object {
 
@@ -87,5 +111,19 @@ class CommentsViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         tvEmail.text = comment.email
         tvTitle.text = comment.name
         tvBody.text = comment.body
+    }
+}
+
+class LoadingViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private val progressBar = itemView.findViewById<ProgressBar>(R.id.progressBar)
+
+    fun bind(loadingState: Status? = null) {
+        val visibility: Int
+        if (loadingState == Status.RUNNING) {
+            visibility = View.VISIBLE
+        } else {
+            visibility = View.INVISIBLE
+        }
+        progressBar.visibility = visibility
     }
 }

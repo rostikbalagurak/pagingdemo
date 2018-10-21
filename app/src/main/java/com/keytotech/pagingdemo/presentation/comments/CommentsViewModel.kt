@@ -7,6 +7,7 @@ import android.arch.lifecycle.Transformations.switchMap
 import android.arch.lifecycle.ViewModel
 import android.arch.paging.PagedList
 import com.keytotech.pagingdemo.di.viewModel.NetworkResource
+import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.entity.Comment
 import com.keytotech.pagingdemo.domain.entity.IdsRange
 import com.keytotech.pagingdemo.presentation.comments.pagination.CommentListing
@@ -27,8 +28,8 @@ class CommentsViewModel @Inject constructor(private val listingProvider: Comment
     }
 
     val commentsList: LiveData<PagedList<Comment>> = switchMap(repoResult) { it.pagedList }
-    val loadingState: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.loadingState }
-    val refreshState: LiveData<NetworkResource<*>> = switchMap(repoResult) { it.refreshState }
+    val loadingState: LiveData<Status> = switchMap(repoResult) { it.loadingState }
+    val refreshState: LiveData<Status> = switchMap(repoResult) { it.refreshState }
 
     fun fetch(range: IdsRange) {
         val initialPage: Int = (range.start / pageSize) + 1

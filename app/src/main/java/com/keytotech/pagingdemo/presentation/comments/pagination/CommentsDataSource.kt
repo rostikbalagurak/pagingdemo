@@ -3,11 +3,11 @@ package com.keytotech.pagingdemo.presentation.comments.pagination
 import android.arch.lifecycle.MutableLiveData
 import android.arch.paging.PageKeyedDataSource
 import com.keytotech.pagingdemo.di.viewModel.NetworkResource
+import com.keytotech.pagingdemo.di.viewModel.Status
 import com.keytotech.pagingdemo.domain.boundaries.repository.CommentsRepository
 import com.keytotech.pagingdemo.domain.entity.Comment
 import com.keytotech.pagingdemo.presentation.comments.Pagination
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.*
 import java.util.concurrent.Executor
 
 /**
@@ -28,9 +28,9 @@ class CommentsDataSource(
      * There is no sync on the state because paging will always call loadInitial first then wait
      * for it to return some success value before calling loadAfter.
      */
-    val networkState = MutableLiveData<NetworkResource<*>>()
+    val networkState = MutableLiveData<Status>()
 
-    val initialLoad = MutableLiveData<NetworkResource<*>>()
+    val initialLoad = MutableLiveData<Status>()
 
     fun retryAllFailed() {
         val prevRetry = retry
@@ -47,8 +47,15 @@ class CommentsDataSource(
         val currentPage = pagination.startPage
         val nextPage = currentPage + 1
         runBlocking {
+            GlobalScope.launch(Dispatchers.Main) {
+                networkState.value = Status.RUNNING
+            }
             val response = repository.getComments(currentPage, pagination.limit).await()
+            Thread.sleep(5000)
             callback.onResult(response, null, nextPage)
+            GlobalScope.launch(Dispatchers.Main) {
+                networkState.value = Status.SUCCESS
+            }
         }
     }
 
@@ -59,8 +66,15 @@ class CommentsDataSource(
         if (currentPage <= pagination.endPage) {
             val nextPage = currentPage + 1
             runBlocking {
+                GlobalScope.launch(Dispatchers.Main) {
+                    networkState.value = Status.RUNNING
+                }
                 val response = repository.getComments(currentPage, pagination.limit).await()
+                Thread.sleep(5000)
                 callback.onResult(response, nextPage)
+                GlobalScope.launch(Dispatchers.Main) {
+                    networkState.value = Status.SUCCESS
+                }
             }
         }
     }

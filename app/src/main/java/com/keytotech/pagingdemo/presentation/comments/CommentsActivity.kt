@@ -63,7 +63,7 @@ class CommentsActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListen
             adapter.setLoadingState(it)
         })
         this.commentsViewModel.refreshState.observe(this, Observer {
-            if (it?.status != Status.RUNNING) {
+            if (it != Status.RUNNING) {
                 swipeRefresh.isRefreshing = false
             }
         })
