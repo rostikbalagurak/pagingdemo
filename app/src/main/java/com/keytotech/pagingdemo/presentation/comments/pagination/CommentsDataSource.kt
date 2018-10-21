@@ -52,12 +52,14 @@ class CommentsDataSource(
         runBlocking {
             GlobalScope.launch(Dispatchers.Main) {
                 networkState.value = Status.RUNNING
+                initialLoad.value = Status.RUNNING
             }
             val response = repository.getComments(currentPage, pagination.limit).await()
             Thread.sleep(DEBUG_SLEEP_RESPONSE_DURATION)
             callback.onResult(response, null, nextPage)
             GlobalScope.launch(Dispatchers.Main) {
                 networkState.value = Status.SUCCESS
+                initialLoad.value = Status.SUCCESS
             }
         }
     }
